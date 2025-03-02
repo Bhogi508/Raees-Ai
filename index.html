@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raees AI - Creative Image Generation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            letter-spacing: 4px;
+            text-shadow: 0 0 15px #00b4d8;
+            margin-bottom: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .chat-container {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            margin-bottom: 2rem;
+        }
+
+        .ai-button {
+            background: #00b4d8;
+            color: white;
+            padding: 1.5rem 3rem;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            box-shadow: 0 10px 30px rgba(0,180,216,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-button:hover {
+            transform: translateY(-3px) rotateX(15deg);
+            box-shadow: 0 15px 40px rgba(0,180,216,0.6);
+        }
+
+        .ai-button:active {
+            transform: translateY(0) rotateX(0deg);
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid #00b4d8;
+            background: rgba(0,0,0,0.3);
+            color: white;
+            font-size: 1.1rem;
+            margin: 1rem 0;
+        }
+
+        .image-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .generated-image {
+            width: 100%;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .generated-image:hover {
+            transform: scale(1.05);
+        }
+
+        .message {
+            background: rgba(255,255,255,0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>RAEES AI</h1>
+        <p>Advanced Image Generation Platform</p>
+    </div>
+
+    <div class="container">
+        <div class="chat-container">
+            <div class="message">Welcome to Raees AI! Describe the image you want to create...</div>
+            <input type="text" class="chat-input" placeholder="Describe your imagination...">
+            <button class="ai-button" onclick="generateImage()">✨ Generate Magic</button>
+        </div>
+
+        <div class="image-display">
+            <!-- Generated images will appear here -->
+        </div>
+    </div>
+
+    <script>
+        async function generateImage() {
+            const prompt = document.querySelector('.chat-input').value;
+            if (!prompt) return;
+
+            // In real implementation, replace with actual API call
+            // Example using DeepSeek API (you'll need proper API key)
+            try {
+                const response = await fetch('https://api.deepseek.com/v1/images/generations', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer YOUR_API_KEY'
+                    },
+                    body: JSON.stringify({
+                        prompt: prompt,
+                        n: 1,
+                        size: "1024x1024"
+                    })
+                });
+
+                const data = await response.json();
+                const imageUrl = data.data[0].url;
+
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                img.classList.add('generated-image');
+                document.querySelector('.image-display').prepend(img);
+
+            } catch (error) {
+                console.error('Error:', error);
+                // For demo purposes, we'll use a placeholder
+                const img = document.createElement('img');
+                img.src = 'https://source.unsplash.com/random/800x800';
+                img.classList.add('generated-image');
+                document.querySelector('.image-display').prepend(img);
+            }
+        }
+    </script>
+</body>
+</html>
+async function generateFreeImage(prompt) {
+  const response = await fetch('https://api.stability.ai/v2beta/stable-image/generate/sd3', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer free-API-key-here', // Get from below
+      'Accept': 'image/*'
+    },
+    body: new URLSearchParams({
+      prompt: prompt,
+      output_format: 'webp'
+    })
+  });
+  return URL.createObjectURL(await response.blob());
+}
